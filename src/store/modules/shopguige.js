@@ -15,9 +15,9 @@ const actions = {
     a(context, con) {
         reqspecsList(con).then(res => {
             let list = res.data.list ? res.data.list : []
-            //     list.forEach(element => {
-            //         element.attrs = JSON.parse(element.attrs)
-            //     });
+                list.forEach(element => {
+                    element.attrs = JSON.parse(element.attrs)
+                });
             context.commit("m", list)
         })
     }

@@ -73,7 +73,7 @@
         </el-form-item>
         <el-form-item label="描述" label-width="120px">
           <!-- 附文本编辑器 -->
- 
+
           <div v-if="info.isshow" id="edit"></div>
         </el-form-item>
       </el-form>
@@ -83,23 +83,27 @@
         <el-button type="primary" v-else @click="update">修 改</el-button>
       </div>
     </el-dialog>
-    {{specsList}}
   </div>
 </template>
 <script>
 import { mapActions, mapGetters } from "vuex";
-import {reqSList} from "../../../utils/http"
-import E from "wangeditor"
+import {
+  reqSList,
+  reqgoodsAdd,
+  reqgoodsDetail,
+  reqgoodsUpdate,
+} from "../../../utils/http";
+import E from "wangeditor";
 export default {
-  props:["info"],
+  props: ["info"],
   data() {
     return {
-    // 渲染二级分类
-      secondCateList:[],
-    // 渲染二级规格    
-      attrsList:[],
-    //  图片路径
-      imgUrl:"",
+      // 渲染二级分类
+      secondCateList: [],
+      // 渲染二级规格
+      attrsList: [],
+      //  图片路径
+      imgUrl: "",
       user: {
         first_cateid: "",
         second_cateid: "",
@@ -110,65 +114,128 @@ export default {
         isnew: "",
         ishot: "",
         status: "",
-        description:"" ,
-        img:null,
-        specsattr:[]
+        description: "",
+        img: null,
+        specsattr: [],
       },
     };
   },
   methods: {
+    //   ref触发事件
+    comeGoRef(id) {
+      this.info.isshow = true;
+      reqgoodsDetail(id).then((res) => {
+        this.user = res.data.list;
+        this.user.specsattr = JSON.parse(res.data.list.specsattr);
+        this.imgUrl =this.$host + res.data.list.img;
+        this.user.id = id
+        if(this.editor){
+             this.editor.txt.html(this.user.description);
+        }
+        // 
+        reqSList({ pid: this.user.first_cateid }).then((res) => {
+        this.secondCateList = res.data.list;
+      });
+       
+      });
+    },
     // 弹框结束事件
     opened() {
-        let editor = new E("#edit")
-        editor.create()
+        // 弹窗加载完成后创建附文本框
+      this.editor = new E("#edit");
+      this.editor.create();
+
+       this.editor.txt.html(this.user.description);
     },
-    closed() {},
+    closed() {
+      if(this.info.title == "修改商品"){
+        this.user =  {
+        first_cateid: "",
+        second_cateid: "",
+        goodsname: "",
+        price: "",
+        market_price: "",
+        specsid: "",
+        isnew: "",
+        ishot: "",
+        status: "",
+        description: "",
+        img: null,
+        specsattr: [],
+      }
+      this.imgUrl = "";
+      }
+    },
     // 一级分类的改变事件 一级分类发生改变发起分类请求，一级分类请求数据后双向绑定的一级分类编号做参数发起请求二级分类
     changeFirst() {
-        reqSList({pid:this.user.first_cateid}).then(res=>{
-            this.secondCateList = res.data.list
-        })
+      reqSList({ pid: this.user.first_cateid }).then((res) => {
+        this.secondCateList = res.data.list;
+      });
     },
     // 上传图片事件
     changeFile(e) {
-    // 前台要展示的图片路径
-       this.imgUrl = URL.createObjectURL( e.target.files[0])
-       this.user.img = e.target.files[0]
-       console.log(this.user);
+      // 前台要展示的图片路径
+      this.imgUrl = URL.createObjectURL(e.target.files[0]);
+      this.user.img = e.target.files[0];
+      console.log( this.imgUrl);
     },
     changeSpecsId() {
-        this.user.specsattr = [];
-        // 当一级规格发生改变触发二级规格事件
-        // 取出数据id号与双向绑定的分类编号一样的在改变时赋值给二级商品规格框
-        console.log( this.specsList.find(item=>item.id == this.user.specsid));
-        let att = this.specsList.find(item=>item.id == this.user.specsid)
-        this. attrsList = JSON.parse(att.attrs)
+      this.user.specsattr = [];
+      // 当一级规格发生改变触发二级规格事件
+      // 取出数据id号与双向绑定的分类编号一样的在改变时赋值给二级商品规格框
+      let att = this.specsList.find((item) => item.id == this.user.specsid);
+      this.attrsList = att.attrs;
     },
     // 取消
     cancel() {
-        this.info.isshow = false
+      this.info.isshow = false;
     },
     // 添加商品
     add() {
-        this.user.description = this.editor.txt.html();
+      // 取到附文本编辑框内容,并赋值给参数对象
+      this.user.description = this.editor.txt.html();
+      // 后台需要的是"[]"形式，视图双向绑定的数据要[]形式，此时数据既要满足双向绑定，又要给后台传合适参数，数据里specsattr不符合
+      let d = { ...this.user };
+      d.specsattr = JSON.stringify(d.specsattr);
+      reqgoodsAdd(d).then((res) => {
+        this.a3();
+        this.info.isshow = false;
+        this.all()
+      });
     },
-    update(){},
+    // 修改请求
+    update() {
+      this.user.description = this.editor.txt.html();
+      let d = { ...this.user };
+      d.specsattr = JSON.stringify(d.specsattr);
+      reqgoodsUpdate(d).then((res) => {
+          this.info.isshow = false
+          this.a3()
+      });
+      this. closed()
+    },
     ...mapActions({
-        // 获取分类数据一级分类渲染到表单
-        a:"shopfenlei/a",
-        // 获取一级商品规格
-        a:"shopguige/a"
+      // 获取分类数据一级分类渲染到表单
+      a: "shopfenlei/a",
+      // 获取一级商品规格
+      a2: "shopguige/a",
+      // list列表
+      a3: "shopguanli/a",
+      all:"shopguanli/all"
     }),
   },
 
   mounted() {
-      this.a()
+    this.a();
+    this.a2();
+    this.a3();
+    
   },
   computed: {
     ...mapGetters({
-        cateList:"shopfenlei/g",
-        // 一级规格数据
-        specsList:"shopguige/g"//此时是数组，后台要“[]”
+      cateList: "shopfenlei/g",
+      // 一级规格数据
+      specsList: "shopguige/g", //此时是数组，后台要“[]”
     }),
   },
 };

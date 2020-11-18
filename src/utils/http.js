@@ -303,7 +303,7 @@ export const reqgoodsDel = (id) => {
     })
 }
 
-// 33.详情
+// 33.详情一条
 export const reqgoodsDetail = id => {
     return axios({
         url: baseUrl + "/api/goodsinfo",

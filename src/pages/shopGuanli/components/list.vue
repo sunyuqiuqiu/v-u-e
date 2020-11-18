@@ -12,7 +12,7 @@
       <el-table-column prop="goodsname" label="商品名称" sortable></el-table-column>
       <el-table-column label="图片" sortable>
         <template slot-scope="scope">
-          <img :src="$imgPre+scope.row.img" alt />
+          <img :src="$host+scope.row.img" alt />
         </template>
       </el-table-column>
       <el-table-column label="是否新品">
@@ -38,43 +38,74 @@
         <template slot-scope="scope">
           <el-button type="primary" @click="edit(scope.row.id)">编辑</el-button>
           <!-- 32.绑定confirm事件 -->
-          <del-btn @confirm="del(scope.row.id)"></del-btn>
+          <del-btn @del="del(scope.row.id)"></del-btn>
         </template>
       </el-table-column>
     </el-table>
 
-    <!-- <el-pagination
+    <el-pagination
       background
       layout="prev, pager, next"
       :total="total"
       :page-size="size"
       @current-change="changePage"
-    ></el-pagination> -->
+    ></el-pagination>
   </div>
 </template>
 <script>
 import { mapActions, mapGetters } from "vuex";
+import {reqgoodsDel} from "../../../utils/http"
+import {successAlert,errorAlert} from "../../../utils/alert"
+
 export default {
-  data(){
-      return{
-          list:[],
-      }
+  props:["info"],
+  data() {
+    return {};
   },
   methods: {
-    edit(){
-
+    // 编辑
+    edit(id) {
+        this.info.isshow = false
+        this.info.title ="修改商品"
+        this.$emit("comeGo",id)
     },
-    del(){
+    // 删除
+    del(id) {
+        console.log(999);
+        reqgoodsDel(id).then(res=>{
+          // 删除后调用更新
+            this.a()
+            this.all()
+        })
         
     },
-    ...mapActions({}),
+    ...mapActions({
+      // list列表
+      a: "shopguanli/a",
+      all:"shopguanli/all",
+      ye:"shopguanli/ye"
+    }),
+    // 分页
+    changePage(n){
+      this.ye(n)
+    }
   },
-  mounted() {},
+  mounted() {
+    this.a();
+    this.all()
+  },
   computed: {
-    ...mapGetters({}),
+    ...mapGetters({
+      list: "shopguanli/g",
+      total:"shopguanli/all",
+      size:"shopguanli/s"
+    }),
   },
 };
 </script>
 <style scoped>
-
+img {
+  width: 80px;
+  height: 80px;
+}
 </style>

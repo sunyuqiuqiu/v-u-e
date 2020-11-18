@@ -3,9 +3,9 @@
     <!-- 添加按钮 -->
     <el-button type="primary" @click="willAdd">添加</el-button>
     <!-- list组件 -->
-    <v-list></v-list>
+    <v-list :info= "info" @comeGo="comeGo"></v-list>
     <!-- form组件 -->
-    <v-form :info= "info"></v-form>
+    <v-form :info= "info" ref="refGo"></v-form>
   </div>
 </template>
 <script>
@@ -27,6 +27,9 @@ export default {
     vForm,
   },
   methods: {
+     comeGo(id){
+        this.$refs.refGo.comeGoRef(id)
+     },
     willAdd() {
        this.info = {
           isshow:true,
