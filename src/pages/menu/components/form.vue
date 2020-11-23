@@ -131,6 +131,7 @@ export default {
 
     //ref触发的事件
     getOne(scope) {
+      console.log(typeof scope,scope);
       reqMenuOne(scope).then((res) => {
         this.form = res.data.list;
         // 因为后台修改参数要求多需要个id

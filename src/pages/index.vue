@@ -13,40 +13,33 @@
           unique-opened
           router
         >
-          <el-menu-item index="/index/home">
+          <el-menu-item index="/home">
             <i class="el-icon-menu"></i>
             <span slot="title">首页</span>
           </el-menu-item>
-          <el-submenu index="2">
+      <div v-for="item of g.menus" :key="item.id">
+          <el-submenu :index= "item.id" v-if="item.children">
             <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>系统设置</span>
+              <i :class= "item.icon"></i>
+              <span>{{item.title}}</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="/index/menu">菜单管理</el-menu-item>
-              <el-menu-item index="/index/jue">角色管理</el-menu-item>
-              <el-menu-item index="/index/manage">管理员管理</el-menu-item>
+              <el-menu-item :index= "val.url" v-for="val of item.children" :key="val.id">{{val.title}}</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
-          <el-submenu index="3">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>商城管理</span>
-            </template>
-            <el-menu-item-group>
-              <el-menu-item index="/index/shopFenlei">商品分类</el-menu-item>
-              <el-menu-item index="/index/shopGuige">商品规格</el-menu-item>
-              <el-menu-item index="/index/shopGuanli">商品管理</el-menu-item>
-              <el-menu-item index="/index/vip">会员管理</el-menu-item>
-              <el-menu-item index="/index/vbanner">轮播图管理</el-menu-item>
-              <el-menu-item index="/index/s">秒杀活动</el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
+           <el-menu-item v-else :index= "item.url" :key="item.id">{{item.title}}</el-menu-item>
+      </div>
+          
         </el-menu>
       </el-aside>
       <!-- 右中 -->
       <el-container>
-        <el-header>Header</el-header>
+        <el-header>
+          <div class="u">
+            <span>{{g.username}}</span>
+            <el-button type="danger" @click="goto">退出</el-button>
+          </div>
+        </el-header>
         <!-- 面包屑 -->
         <el-breadcrumb separator="/" v-if="$route.name">
           <el-breadcrumb-item :to="{ path: '/index/home' }">首页</el-breadcrumb-item>
@@ -60,17 +53,29 @@
         </el-main>
       </el-container>
     </el-container>
+ 
   </div>
 </template>
 <script>
 import { mapActions, mapGetters } from "vuex";
 export default {
   methods: {
-    ...mapActions({}),
+    goto(){
+      // 退出时触发状态层，此时传个空对象
+      this.a({})
+      this.$router.push("/login")
+    },
+    ...mapActions({
+      a:"Aobj"
+    }),
   },
-  mounted() {},
+  mounted() {
+    
+  },
   computed: {
-    ...mapGetters({}),
+    ...mapGetters({
+      g:"Gobj"
+    }),
   },
   data() {
     return {
@@ -87,21 +92,24 @@ export default {
 <style scoped>
 .el-header,
 .el-footer {
-  background-color: #B3C0D1;
+  background-color: #b3c0d1;
   color: #333;
   text-align: center;
   line-height: 60px;
 }
 .el-aside {
-  background-color: #D3DCE6;
+  background-color: #d3dce6;
   color: #333;
   text-align: center;
   line-height: 200px;
   min-height: 550px;
 }
 .el-main {
-  background-color: #E9EEF3;
+  background-color: #e9eef3;
   color: #333;
   height: 100%;
+}
+.u{
+  float: right;
 }
 </style>

@@ -338,3 +338,129 @@ export const reqgoodsCount = () => {
 
 // ===========商品管理接口 结束====================
 
+// ===========banner接口 开始====================
+
+// banner添加
+export const reqBanAdd = (obj)=>{
+    let f = new FormData()
+    for (const key in obj) {
+      f.append(key,obj[key])
+    }
+    return axios({
+        url:baseUrl + "/api/banneradd",
+        method:"post",
+        data:f
+    })
+}
+// 列表
+export const reqBanList = ()=>{
+    return axios({
+        url:baseUrl + "/api/bannerlist",
+        method:"get"
+    })
+}
+// 获取一条
+export const reqBanOne = (id)=>{
+    return axios({
+        url:baseUrl + "/api/bannerinfo",
+        method:"get",
+        params:{id:id}
+    })
+}
+// 修改获取
+export const reqBanX = (obj)=>{
+    let f = new FormData()
+       for (const key in obj) {
+           f.append(key,obj[key])
+    }
+    return axios({
+        url:baseUrl + "/api/banneredit",
+        method:"post",
+        data:f
+    })
+}
+// 删除请求
+export const reqBanDel = (id)=>{
+ return axios({
+     url:baseUrl + "/api/bannerdelete",
+     method:"post",
+     data:{
+         id:id
+     }
+ })
+}
+
+// =========== vip ================
+export const reqVipAdd = ()=>{
+    return axios({
+        url:baseUrl + "/api/memberlist",
+        method:"get"
+    })
+}
+// 获取一条
+export const reqVipOne = (uid)=>{
+    return axios({
+        url:baseUrl + "/api/memberinfo",
+        method:"get",
+        params:{
+            uid:uid
+        }
+    })
+}
+// 修改
+export const reqVipX = (obj)=>{
+    return axios({
+        url:baseUrl + "/api/memberedit",
+        method:"post",
+        data:qs.stringify(obj)
+    })
+}
+// ======== vip ========
+
+// ====== login ========
+export const reqLogin = (obj)=>{
+    return axios({
+        url:baseUrl + "/api/userlogin",
+        method:"post",
+        data:qs.stringify(obj)
+    })
+}
+// ====== s ==========
+export const reqSSAdd = (obj)=>{
+    return axios({
+        url:baseUrl + "/api/seckadd",
+        method:"post",
+        data:obj
+    })
+}
+export const reqSSList = ()=>{
+    return axios({
+        url:baseUrl + "/api/secklist",
+        method:"get",
+    })
+}
+export const reqSSOne = (id)=>{
+    return axios({
+        url:baseUrl + "/api/seckinfo",
+        method:"get",
+        params:{
+            id:id
+        }
+    })
+}
+export const reqSSX = (obj)=>{
+    return axios({
+        url:baseUrl + "/api/seckedit",
+        method:"post",
+        data:obj
+    })
+}
+export const reqSSDel = (id)=>{
+    return axios({
+        url:baseUrl + "/api/seckdelete",
+        method:"post",
+        data:{
+            id:id
+        }
+    })
+}

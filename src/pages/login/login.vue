@@ -1,73 +1,84 @@
 <template>
   <div class="login">
-      <div class="con">
-        <h3>登录</h3>
-        <div class="line">
-          <el-input v-model="user.name" placeholder="请输入账号" clearable></el-input>
-        </div>
-        <div class="line">
-          <el-input v-model="user.pass" placeholder="请输入密码" clearable show-password></el-input>
-        </div>
-        <div class="last">
-          <el-button type="primary" @click="login">登录</el-button>
-        </div>
+    <div class="con">
+      <h3>登录</h3>
+      <div class="line">
+        <el-input v-model="user.username" placeholder="请输入账号" clearable></el-input>
       </div>
+      <div class="line">
+        <el-input v-model="user.password" placeholder="请输入密码" clearable show-password></el-input>
+      </div>
+      <div class="last">
+        <el-button type="primary" @click="login">登录</el-button>
+      </div>
+    </div>
   </div>
 </template>
 <script>
-import {mapActions,mapGetters} from "vuex"
+import { mapActions, mapGetters } from "vuex";
+import { reqLogin } from "../../utils/http";
 export default {
-methods:{
-...mapActions({
+  methods: {
+    data() {
+      return {
+        user: {
+          username: "",
+          password: "",
+        },
+      };
+    },
+    ...mapActions({
+      a: "Aobj",
+    }),
+    login() {
+      reqLogin(this.user).then((res) => {
+        this.a(res.data.list)
+        this.$router.push("/");
 
- }),
- login(){
-    this.$router.push("/index")
- }
- },
-mounted(){
-
-},
-computed:{
-...mapGetters({
-
-   })
-},
-data(){
-   return{
-      user:{
-         name:"",
-         pass:""
-      }
-   }
-}
-}
+      });
+    },
+  },
+  mounted() {},
+  computed: {
+    ...mapGetters({
+      g:"Gobj"
+    }),
+  },
+  data() {
+    return {
+      user: {
+        name: "",
+        pass: "",
+      },
+    };
+  },
+};
 </script>
 <style scoped>
-.login{
+.login {
   width: 100vw;
   height: 100vh;
   position: relative;
-  background: linear-gradient(to right,#543444,#403A53,#303D5F);
+  background: linear-gradient(to right, #543444, #403a53, #303d5f);
 }
-.con{
+.con {
   width: 400px;
   padding: 20px;
   background: #fff;
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
   border-radius: 20px;
 }
-h3{
+h3 {
   text-align: center;
   margin: 10px;
 }
-.line{
+.line {
   margin-bottom: 15px;
 }
-.last{
+.last {
   text-align: center;
 }
 </style>

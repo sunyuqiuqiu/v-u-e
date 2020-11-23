@@ -5,9 +5,9 @@
 </template>
 <script>
 import { mapActions, mapGetters } from "vuex";
+import {errorAlert} from "../../utils/alert"
 export default {
   methods: {
-    ...mapActions({}),
     del() {
       this.$confirm("你确定要删除吗？", "删除提示", {
         confirmButtonText: "删除",
@@ -15,13 +15,12 @@ export default {
         type: "warning",
       }).then(() => {
           this.$emit("del")
-      });
+      }).catch(err=>{
+         errorAlert("您已取消")
+      })
     },
   },
-  mounted() {},
-  computed: {
-    ...mapGetters({}),
-  },
+
 };
 </script>
 <style scoped>

@@ -39,7 +39,7 @@ const actions = {
            contxt.commit("m",list)
         })
     },
-    // count总数如何修改，发请求然后通知mutations去修改，总数变活的了
+    // count总数如何修改，每次增删都触发一下它，发请求然后通知mutations去修改，总数变活的了
     all(contxt){
         reqgoodsCount().then(res=>{
             contxt.commit("all",res.data.list[0].total)
